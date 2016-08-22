@@ -5,6 +5,8 @@ var Twitter = require('twitter')
 var sentiment = require('sentiment');
 var cleanThisTweet = require('clean-this-tweet-up');
 
+var response = [], dbData = []; // to store the tweets and sentiment
+
 // load environment variables
 dotenv.load()
 
@@ -16,26 +18,39 @@ var client = new Twitter({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-//sentiment test code
-var test1 = sentiment('Cats are stupid.');
-console.log(test1);        // Score: -2, Comparative: -0.666
-
-var test2 = sentiment('Cats are totally amazing!');
-console.log(test2);        // Score: 4, Comparative: 1
-
-
 // get data from twitter
 var stream = client.stream('statuses/filter', {language: 'en', track: 'lunch'});
 stream.on('data', function(event) {
-  var tweet = event && event.text
-  var result = sentiment(tweet)
-    console.log(result.score, event.text)
+  var tweet = event && event.text;
+  var result = sentiment(tweet);
+  // var integer = result.score;
+
+  // sentimentToRed (sentimentScore) {
+  //   return (12.8 * sentimentScore) +
+  // }
+  if (result.score === 0) {
+    response.push(result.score, [128, 0, 128]);
+    console.log(response);
+  }
+  else if (result.score === 10){
+    console.log(result.score, [0, 0, 255]);
+  }
+
+  else if (result.score === -10){
+    console.log(result.score, [255, 0, 0]);
+  }
+// document.write(result);
+
+  // response.push(result.score);
+    // console.log(result.score, event.text)
   // console.log(event && event.text);
 });
+
 
 stream.on('error', function(error) {
   throw error;
 });
+
 
 //extract tweets
 //convert to strings
