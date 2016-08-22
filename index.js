@@ -23,22 +23,29 @@ var stream = client.stream('statuses/filter', {language: 'en', track: 'lunch'});
 stream.on('data', function(event) {
   var tweet = event && event.text;
   var result = sentiment(tweet);
-  // var integer = result.score;
+  var integer = result.score;
+console.log(integer)
 
-  // sentimentToRed (sentimentScore) {
-  //   return (12.8 * sentimentScore) +
+function sentimentToRed () {
+  return (12.8 * integer) + 127.8
+  }
+console.log(sentimentToRed(), 'red')
+
+function sentimentToBlue() {
+  return 255 - ((12.8 * integer) + 127.8)
+}
+console.log(sentimentToBlue(), 'blue')
+  // if (result.score === 0) {
+  //   response.push(result.score, [128, 0, 128]);
+  //   console.log(response);
   // }
-  if (result.score === 0) {
-    response.push(result.score, [128, 0, 128]);
-    console.log(response);
-  }
-  else if (result.score === 10){
-    console.log(result.score, [0, 0, 255]);
-  }
-
-  else if (result.score === -10){
-    console.log(result.score, [255, 0, 0]);
-  }
+  // else if (result.score === 10){
+  //   console.log(result.score, [0, 0, 255]);
+  // }
+  //
+  // else if (result.score === -10){
+  //   console.log(result.score, [255, 0, 0]);
+  // }
 // document.write(result);
 
   // response.push(result.score);
