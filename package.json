@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "watchify public/client/*.js -o public/bundle.js",
+    "build": "watchify public/client/*.js -o public/bundle.js -dv",
     "start": "nodemon server.js",
     "test": "tape tests/*.js | tap-spec"
   },
