@@ -14,3 +14,7 @@ window.onload = function () {
   getMood()
   // document.body.style.backgroundColor = color
 }
+
+controlColor(data) {
+  document.body.style.backgroundColor = 'rgb(' + rgb.join(',') + ')'
+}

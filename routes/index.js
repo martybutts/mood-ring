@@ -42,6 +42,7 @@ router.get('/tweets', function(req, res, next) {
  console.log('here is rgb in routes', rgb)
 // document.body.style.backgroundColor = 'rgb(' + rgb.join(',') + ')';
 // console.log('here is the color')
+res.send({test: 'score'})
 });
 
 stream.on('error', function(error) {
