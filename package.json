@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "watchify public/client/*.js -o public/bundle.js",
     "start": "nodemon server.js",
-    "test": "tape test/*.js | tap-spec"
+    "test": "tape tests/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/martybutts/mood-ring#readme",
   "dependencies": {
     "bluebird": "^3.0.6",
+    "browserify": "^13.1.0",
     "clean-this-tweet-up": "^1.0.2",
     "colors": "^1.1.2",
     "dotenv": "^1.2.0",
@@ -29,7 +31,9 @@
     "ramda": "^0.18.0",
     "sentiment": "^2.0.0",
     "superagent": "^1.5.0",
-    "twitter": "^1.2.5"
+    "twitter": "^1.2.5",
+    "watchify": "^3.7.0",
+    "xhr": "^2.2.2"
   },
   "devDependencies": {
     "tap-spec": "^4.1.1",

@@ -1,11 +1,10 @@
 var dotenv = require('dotenv')
-var isUrl = require('is-url')
 var request = require('superagent')
 var Twitter = require('twitter')
 var sentiment = require('sentiment');
 var cleanThisTweet = require('clean-this-tweet-up');
 
-var response = [], dbData = []; // to store the tweets and sentiment
+// var response = [], dbData = []; // to store the tweets and sentiment
 
 // load environment variables
 dotenv.load()
@@ -19,22 +18,39 @@ var client = new Twitter({
 });
 
 // get data from twitter
+
 var stream = client.stream('statuses/filter', {language: 'en', track: 'lunch'});
 stream.on('data', function(event) {
   var tweet = event && event.text;
   var result = sentiment(tweet);
-  var integer = result.score;
-console.log(integer)
+  var score = result.score;
+console.log(score)
 
-function sentimentToRed () {
-  return (12.8 * integer) + 127.8
+//convert integer to rgb values
+var sentimentToRed = function () {
+  return (12.8 * score) + 127.8
   }
 console.log(sentimentToRed(), 'red')
 
-function sentimentToBlue() {
-  return 255 - ((12.8 * integer) + 127.8)
+var sentimentToBlue = function () {
+  return 255 - ((12.8 * score) + 127.8)
 }
 console.log(sentimentToBlue(), 'blue')
+
+
+//load color in html
+// canvas.innerHTML.style.color = (sentimentToRed(), 0, sentimentToBlue())
+
+
+
+// var color = (sentimentToRed(), 0, sentimentToBlue());
+
+
+
+
+// function addColor () {
+// }
+
   // if (result.score === 0) {
   //   response.push(result.score, [128, 0, 128]);
   //   console.log(response);
@@ -58,11 +74,14 @@ stream.on('error', function(error) {
   throw error;
 });
 
-
+module.exports = {
+  sentimentToRed,
+  sentimentToBlue
+}
+// // window.onload = function () {
+//   document.body.style.backgroundColor = "red"
+// // }
 //extract tweets
-//convert to strings
-//push to an array
-
 //convert using sentiment
 //convert sentiment result to colors
 //load color in index.html
