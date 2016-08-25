@@ -3,6 +3,8 @@ var path = require('path')
 // var data = require('./index.js');
 var server = express()
 var routes = require('./routes/index');
+var http = require('http').Server(server);
+var io = require('socket.io')(http);
 //server setup
 var PORT = process.env.PORT || 3000
 server.use("/", routes)
@@ -18,3 +20,6 @@ server.use(express.static('public'))
 server.listen(PORT, function () {
   console.log('Server listening on port: ', PORT)
 })
+
+
+module.exports = io

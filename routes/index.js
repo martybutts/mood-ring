@@ -1,3 +1,6 @@
+// var server = require('http').createServer();
+// var url = require('url');
+
 var express = require('express');
 var router = express.Router();
 var dotenv = require('dotenv')
@@ -5,8 +8,7 @@ var request = require('superagent')
 var Twitter = require('twitter')
 var sentiment = require('sentiment');
 var cleanThisTweet = require('clean-this-tweet-up');
-
-// var response = [], dbData = []; // to store the tweets and sentiment
+var io = require('../server')
 
 // load environment variables
 dotenv.load()
@@ -19,48 +21,47 @@ var client = new Twitter({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
 });
 
-// get data from twitter
+//convert integer to rgb values
+var sentimentToRed = function (score) {
+  return (12.8 * score) + 127.8
+}
+var sentimentToBlue = function (score) {
+  return 255 - ((12.8 * score) + 127.8)
+}
 
+var extractScore = function (event) {
+  var tweet = event && event.text;
+  var result = sentiment(tweet);
+  var score = result.score;
+
+  return score
+}
+
+// get data from twitter
 router.get('/tweets', function(req, res, next) {
   var stream = client.stream('statuses/filter', {language: 'en', track: 'lunch'});
+
   stream.on('data', function(event) {
-    var tweet = event && event.text;
-    var result = sentiment(tweet);
-    var score = result.score;
-   console.log(score)
+    var score = extractScore(event)
+  })
 
-  //convert integer to rgb values
-  var sentimentToRed = function () {
-    return (12.8 * score) + 127.8
-    // console.log('red', sentimentToRed())
-    }
-  var sentimentToBlue = function () {
-    return 255 - ((12.8 * score) + 127.8)
-    // console.log('blue', sentimentToBlue())
-  }
- var rgb = [sentimentToRed(), 0, sentimentToBlue()]
- console.log('here is rgb in routes', rgb)
-// document.body.style.backgroundColor = 'rgb(' + rgb.join(',') + ')';
-// console.log('here is the color')
-res.send({test: 'score'})
+  var rgb = [sentimentToRed(score), 0, sentimentToBlue(score)]
+
+
+  io.on('connection', function(socket){
+  socket.on('message', function(msg){
+    console.log('message: ' + msg);
+  });
 });
 
-stream.on('error', function(error) {
-  throw error;
+  stream.on('error', function(error) {
+    throw error;
+  });
 });
 
-});
   //load color in html
   // canvas.innerHTML.style.color = (sentimentToRed(), 0, sentimentToBlue())
+  // console.log(result.score, event.text)
+  // console.log(event && event.text);
 
-
-
-    // console.log(result.score, event.text)
-    // console.log(event && event.text);
-
-
-
-
-// GET home page.
-
-module.exports = router;
+module.exports = router
