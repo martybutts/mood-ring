@@ -1,14 +1,18 @@
 var xhr = require('xhr')
-var socket = io();
+var socket = io()
 var endpoint = '/tweets'
-var rgb = require('../../routes/index.js')
 
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
-  });
-});
+socket.on('connect', function () {
+  console.log('client is connected');
+})
+
+socket.on('color', function (data) {
+   const { rgb } = data
+   console.log('rgb(' + [rgb[0], rgb[1], rgb[2]].join(',') + ')');
+  //  document.body.style.backgroundColor = 'rgb(' + [rgb[0], rgb[1], rgb[2]].join(',') + ')';
+  //  document.body.style.backgroundColor = 'rgb(255,0,255)';
+ });
 
 function getMood() {
     xhr.get(endpoint, function (err, data) {
@@ -19,10 +23,6 @@ function getMood() {
 
 window.onload = function () {
   console.log('client-side working')
-  getMood()
-  document.body.style.backgroundColor = color
-}
-
-controlColor(data) {
-  document.body.style.backgroundColor = 'rgb(' + rgb.join(',') + ')'
+  // getMood()
+  // document.body.style.backgroundColor = 'rgb(127,0,127)';
 }
