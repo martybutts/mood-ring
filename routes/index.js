@@ -2,13 +2,13 @@
 // var url = require('url');
 
 var express = require('express');
-var router = express.Router();
+// var router = express.Router();
 var dotenv = require('dotenv')
 var request = require('superagent')
 var Twitter = require('twitter')
 var sentiment = require('sentiment');
 var cleanThisTweet = require('clean-this-tweet-up');
-var io = require('../server')
+
 
 // load environment variables
 dotenv.load()
@@ -23,10 +23,10 @@ var client = new Twitter({
 
 //convert integer to rgb values
 var sentimentToRed = function (score) {
-  return (12.8 * score) + 127.8
+  return Math.round( (12.8 * score) + 127.8)
 }
 var sentimentToBlue = function (score) {
-  return 255 - ((12.8 * score) + 127.8)
+  return  Math.round (255 - ((12.8 * score) + 127.8) )
 }
 
 var extractScore = function (event) {
@@ -37,22 +37,29 @@ var extractScore = function (event) {
   return score
 }
 
+module.exports = function (io) {
+
+
 // get data from twitter
-router.get('/tweets', function(req, res, next) {
+// app.get('/tweets', function(req, res, next) {
+io.on('connection', function (socket) {
   var stream = client.stream('statuses/filter', {language: 'en', track: 'lunch'});
 
   stream.on('data', function(event) {
     var score = extractScore(event)
+
+    var rgb = [sentimentToRed(score), 0, sentimentToBlue(score)]
+
+    socket.emit('color', { rgb: rgb });
+
   })
 
-  var rgb = [sentimentToRed(score), 0, sentimentToBlue(score)]
-
-
-  io.on('connection', function(socket){
-  socket.on('message', function(msg){
-    console.log('message: ' + msg);
-  });
-});
+  //   io.on('connection', function (socket) {
+  //     socket.emit('message', { hello: 'world' });
+  //     // socket.on('my other event', function (data) {
+  //     //   console.log(data);
+  //     // });
+  // });
 
   stream.on('error', function(error) {
     throw error;
@@ -63,5 +70,6 @@ router.get('/tweets', function(req, res, next) {
   // canvas.innerHTML.style.color = (sentimentToRed(), 0, sentimentToBlue())
   // console.log(result.score, event.text)
   // console.log(event && event.text);
+}
 
-module.exports = router
+// module.exports = router
