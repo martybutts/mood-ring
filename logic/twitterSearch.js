@@ -1,4 +1,3 @@
-//includes
 var util = require('util'),
     twitter = require('twitter'),
     sentimentAnalysis = require('./sentimentAnalysis'),
