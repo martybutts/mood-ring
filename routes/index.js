@@ -1,8 +1,4 @@
-// var server = require('http').createServer();
-// var url = require('url');
-
 var express = require('express');
-// var router = express.Router();
 var dotenv = require('dotenv')
 var request = require('superagent')
 var Twitter = require('twitter')
@@ -33,43 +29,28 @@ var extractScore = function (event) {
   var tweet = event && event.text;
   var result = sentiment(tweet);
   var score = result.score;
-
+console.log(tweet)
+console.log('')
   return score
 }
 
 module.exports = function (io) {
+  // get data from twitter
+  // app.get('/tweets', function(req, res, next) {
+  io.on('connection', function (socket) {
+    var stream = client.stream('statuses/filter', {language: 'en', track: 'trump'});
 
+    stream.on('data', function(event) {
+      var score = extractScore(event)
 
-// get data from twitter
-// app.get('/tweets', function(req, res, next) {
-io.on('connection', function (socket) {
-  var stream = client.stream('statuses/filter', {language: 'en', track: 'lunch'});
+      var rgb = [sentimentToRed(score), 0, sentimentToBlue(score)]
 
-  stream.on('data', function(event) {
-    var score = extractScore(event)
+      socket.emit('color', { rgb: rgb });
 
-    var rgb = [sentimentToRed(score), 0, sentimentToBlue(score)]
+    })
 
-    socket.emit('color', { rgb: rgb });
-
-  })
-
-  //   io.on('connection', function (socket) {
-  //     socket.emit('message', { hello: 'world' });
-  //     // socket.on('my other event', function (data) {
-  //     //   console.log(data);
-  //     // });
-  // });
-
-  stream.on('error', function(error) {
-    throw error;
+    stream.on('error', function(error) {
+      throw error;
+    });
   });
-});
-
-  //load color in html
-  // canvas.innerHTML.style.color = (sentimentToRed(), 0, sentimentToBlue())
-  // console.log(result.score, event.text)
-  // console.log(event && event.text);
 }
-
-// module.exports = router
