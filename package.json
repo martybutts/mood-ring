@@ -6,7 +6,6 @@
   "scripts": {
     "build": "watchify public/client/*.js -o public/bundle.js -dv",
     "start": "nodemon server.js",
-    "build": "NODE_ENV=production watchify public/client/*.js -o public/bundle.js -g",
     "postinstall": "npm run build",
     "test": "tape tests/*.js | tap-spec"
   },
@@ -19,6 +18,9 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/martybutts/mood-ring/issues"
+  },
+  "engines": {
+    "node": "6.4.0"
   },
   "homepage": "https://github.com/martybutts/mood-ring#readme",
   "dependencies": {
