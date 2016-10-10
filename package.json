@@ -6,6 +6,8 @@
   "scripts": {
     "build": "watchify public/client/*.js -o public/bundle.js -dv",
     "start": "nodemon server.js",
+    "build": "NODE_ENV=production watchify public/client/*.js -o public/bundle.js -g",
+    "postinstall": "npm run build",
     "test": "tape tests/*.js | tap-spec"
   },
   "repository": {
