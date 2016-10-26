@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "watchify public/client/*.js -o public/bundle.js -dv",
+    "build": "NODE_ENV=production browserify public/client/*.js -o public/bundle.js -dv",
     "start": "nodemon server.js",
     "postinstall": "npm run build",
     "test": "tape tests/*.js | tap-spec"
